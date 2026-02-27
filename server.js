@@ -16,7 +16,7 @@ public class Server {
     port(4242);
 
     // This is your test secret API key.
-    Stripe.apiKey = "sk_test_51SgaUKRvcXwFOa1F0viO5izv6MM4ccDWuAZ5ZC1nPXEDfDU4e6FxxB2gDH3Y6UNIocMyIJjRl5jl1EeN4yN5jA5w00PQAMgo6u";
+    Stripe.apiKey = "pk_test_51SgaUp2LA6dgBJdr5G1YqfHWRF50oollzywmzLh2QEHYa2gvPF7VAPiVFKYStkC9BAyxhDtyfSWehHLnLsijh7fG00cr1wNFuV";
 
     staticFiles.externalLocation(
         Paths.get("public").toAbsolutePath().toString());
@@ -46,7 +46,7 @@ public class Server {
               SessionCreateParams.LineItem.builder()
                 .setQuantity(1L)
                 // Provide the exact Price ID (for example, price_1234) of the product you want to sell
-                .setPrice("price_1T5IxeRvcXwFOa1Ft5skQeBj")
+                .setPrice("price_1T5K0x2LA6dgBJdrsPM9wH0U")
                 .build())
             .build();
       Session session = Session.create(params);
