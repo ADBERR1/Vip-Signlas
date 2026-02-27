@@ -11,13 +11,13 @@
 
     <script>
         // 1. Pega tu CLAVE PUBLICABLE de prueba aquí (empieza con pk_test_)
-        const stripe = Stripe('pk_test_XXXXXXXXXXXXXXXXXXXXXXXX'); 
+        const stripe = Stripe('pk_test_51SgaUp2LA6dgBJdr5G1YqfHWRF50oollzywmzLh2QEHYa2gvPF7VAPiVFKYStkC9BAyxhDtyfSWehHLnLsijh7fG00cr1wNFuV'); 
 
         const checkoutButton = document.getElementById('checkout-button');
 
         checkoutButton.addEventListener('click', async () => {
             // 2. Pega tu ID de PRECIO de prueba aquí (empieza con price_)
-            const priceId = 'price_1PXXXXXXXXXXXXXXXXXXXXXXX'; 
+            const priceId = 'price_1T5K0x2LA6dgBJdrsPM9wH0U'; 
 
             try {
                 const { error } = await stripe.redirectToCheckout({
