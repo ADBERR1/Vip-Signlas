@@ -1,66 +1,15 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gracias por tu Pago</title>
-    <style>
-        body { font-family: sans-serif; background-color: #121212; color: white; text-align: center; padding: 50px; }
-        .loader { border: 8px solid #f3f3f3; border-top: 8px solid #3498db; border-radius: 50%; width: 60px; height: 60px; animation: spin 2s linear infinite; margin: 20px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #telegram-section { display: none; background-color: #1e88e5; color: white; padding: 30px; border-radius: 10px; margin-top: 30px; max-width: 600px; margin-left: auto; margin-right: auto; }
-        #telegram-link { display: inline-block; background-color: #fff; color: #1e88e5; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-size: 1.2rem; margin-top: 20px; font-weight: bold; }
-        #error-message { color: #ff6b6b; }
-    </style>
+  <title>Thanks for your order!</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Procesando tu pago...</h1>
-    <div class="loader"></div>
-    <p id="status-message">Estamos verificando tu pago. Esto solo tomará un momento.</p>
-    <p id="error-message"></p>
-
-    <div id="telegram-section">
-        <h2>¡Acceso VIP Desbloqueado!</h2>
-        <p>Gracias por tu compra. Aquí tienes tu enlace exclusivo al canal VIP de Telegram:</p>
-        <a href="#" id="telegram-link" target="_blank">Unirse al Canal VIP de Telegram</a>
-        <p style="margin-top: 15px; font-size: 0.9rem;">Este enlace es personal. No lo compartas.</p>
-    </div>
-
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const sessionId = urlParams.get('session_id');
-
-        async function verifyPayment() {
-            if (!sessionId) {
-                document.getElementById('status-message').innerText = 'Error: No se encontró el ID de la sesión.';
-                document.querySelector('.loader').style.display = 'none';
-                return;
-            }
-
-            try {
-                const response = await fetch(`/verify-payment?session_id=${sessionId}`);
-                const data = await response.json();
-
-                if (data.status === 'paid') {
-                    document.getElementById('status-message').innerText = '¡Pago verificado con éxito!';
-                    document.querySelector('.loader').style.display = 'none';
-                    document.getElementById('telegram-section').style.display = 'block';
-                    document.getElementById('telegram-link').href = data.telegramLink;
-                } else {
-                    // Si el pago no se encuentra, reintentamos en un par de segundos
-                    // (a veces el webhook tarda un poco en llegar)
-                    setTimeout(verifyPayment, 3000); 
-                }
-            } catch (error) {
-                console.error('Error al verificar el pago:', error);
-                document.getElementById('status-message').style.display = 'none';
-                document.getElementById('error-message').innerText = 'No pudimos verificar tu pago automáticamente. Por favor, contacta a soporte con tu ID de sesión: ' + sessionId;
-                document.querySelector('.loader').style.display = 'none';
-            }
-        }
-
-        // Empezar la verificación un segundo después de cargar la página
-        setTimeout(verifyPayment, 1000);
-    </script>
+  <section>
+    <p>
+      We appreciate your business! If you have any questions, please email
+      <a href="mailto:orders@example.com">orders@example.com</a>.
+    </p>
+  </section>
 </body>
 </html>
