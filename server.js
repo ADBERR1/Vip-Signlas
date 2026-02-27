@@ -1,103 +1,58 @@
-// Cargar las variables de entorno desde el archivo .env
-require('dotenv').config();
+package com.stripe.sample;
 
-// 1. IMPORTAR LIBRERÍAS
-const express = require('express');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const cors = require('cors');
-const path = require('path');
+import java.nio.file.Paths;
 
-// 2. CONFIGURACIÓN DEL SERVIDOR
-const app = express();
-const PORT = process.env.PORT || 3000;
+import static spark.Spark.post;
+import static spark.Spark.port;
+import static spark.Spark.staticFiles;
 
-// Middlewares (herramientas que usa el servidor)
-app.use(cors()); // Permite que tu página web (frontend) hable con este servidor (backend)
-app.use(express.json()); // Permite al servidor entender JSON
-app.use(express.static(path.join(__dirname))); // Sirve los archivos HTML, CSS, JS de la carpeta
+import com.stripe.Stripe;
+import com.stripe.model.checkout.Session;
+import com.stripe.param.checkout.SessionCreateParams;
 
-// --- BASE DE DATOS SIMULADA ---
-// En una app real, usarías MongoDB, PostgreSQL, etc.
-// Por ahora, un objeto es suficiente para guardar quién pagó.
-const pagosConfirmados = {};
+public class Server {
 
-// 3. ENDPOINT PARA CREAR LA SESIÓN DE PAGO
-// Cuando el usuario hace clic en "Pagar", tu frontend llamará a esta URL.
-app.post('/create-checkout-session', async (req, res) => {
-    const { priceId, userEmail } = req.body;
+  public static void main(String[] args) {
+    port(4242);
 
-    // Validación básica
-    if (!priceId || !userEmail) {
-        return res.status(400).json({ error: 'Faltan el priceId o el userEmail.' });
-    }
+    // This is your test secret API key.
+    Stripe.apiKey = "sk_test_51SgaUKRvcXwFOa1F0viO5izv6MM4ccDWuAZ5ZC1nPXEDfDU4e6FxxB2gDH3Y6UNIocMyIJjRl5jl1EeN4yN5jA5w00PQAMgo6u";
 
-    try {
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
-            customer_email: userEmail,
-            line_items: [
-                {
-                    price: priceId,
-                    quantity: 1,
-                },
-            ],
-            mode: 'payment',
-            success_url: `http://localhost:${PORT}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `http://localhost:${PORT}/cancel.html`,
-        });
+    staticFiles.externalLocation(
+        Paths.get("public").toAbsolutePath().toString());
 
-        res.json({ id: session.id });
-    } catch (error) {
-        console.error("Error al crear la sesión de Stripe:", error);
-        res.status(500).json({ error: { message: error.message } });
-    }
-});
+    post("/create-checkout-session", (request, response) -> {
+        String https://atlas-university.site/Vip-Signlas/ = "http://localhost:4242";
+        SessionCreateParams params =
+          SessionCreateParams.builder()
+            .setCustomerEmail("customer@example.com")
+            .setSubmitType(SessionCreateParams.SubmitType.DONATE)
+            .setBillingAddressCollection(SessionCreateParams.BillingAddressCollection.REQUIRED)
+            .setShippingAddressCollection(
+              SessionCreateParams.ShippingAddressCollection.builder()
+                .addAllowedCountry(SessionCreateParams.ShippingAddressCollection.AllowedCountry.CA)
+                .addAllowedCountry(SessionCreateParams.ShippingAddressCollection.AllowedCountry.US)
+                .build())
+            .setMode(SessionCreateParams.Mode.PAYMENT)
+            .setSuccessUrl(YOUR_DOMAIN + "/success.html")
+            .setAutomaticTax(
+              SessionCreateParams.AutomaticTax.builder()
+                .setEnabled(true)
+                .build())
+            .setCustomerCreation(SessionCreateParams.CustomerCreation.ALWAYS)
+            // Provide the Customer ID (for example, cus_1234) for an existing customer to associate it with this session
+            // .setCustomer("{{CUSTOMER_ID}}")
+            .addLineItem(
+              SessionCreateParams.LineItem.builder()
+                .setQuantity(1L)
+                // Provide the exact Price ID (for example, price_1234) of the product you want to sell
+                .setPrice("price_1T5IxeRvcXwFOa1Ft5skQeBj")
+                .build())
+            .build();
+      Session session = Session.create(params);
 
-// 4. WEBHOOK PARA RECIBIR CONFIRMACIONES DE STRIPE (¡El método más seguro!)
-// Stripe enviará una notificación a esta URL cuando un pago se complete.
-app.post('/webhook', express.raw({type: 'application/json'}), (req, res) => {
-    const sig = req.headers['stripe-signature'];
-    let event;
-
-    // NOTA: Para producción, DEBES verificar la firma del webhook con tu webhook secret.
-    // Para pruebas, podemos omitirlo por simplicidad.
-    // event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-    
-    try {
-        event = JSON.parse(req.body);
-    } catch (err) {
-        console.log(`⚠️  Webhook error al parsear el payload.`);
-        return res.status(400).send('Webhook error: invalid payload');
-    }
-
-    // Manejar el evento 'checkout.session.completed'
-    if (event.type === 'checkout.session.completed') {
-        const session = event.data.object;
-        console.log(`✅ Pago exitoso para: ${session.customer_email}`);
-        
-        // ¡AQUÍ GUARDAS LA INFORMACIÓN!
-        // Guardamos el ID de la sesión para poder verificarlo después.
-        pagosConfirmados[session.id] = {
-            email: session.customer_email,
-            paid: true
-        };
-    }
-
-    // Devolver una respuesta 200 OK a Stripe
-    res.json({received: true});
-});
-
-// 5. ENDPOINT PARA VERIFICAR EL PAGO EN EL FRONTEND
-// La página success.html usará esta para saber si puede mostrar el enlace.
-app.get('/verify-payment', (req, res) => {
-    const sessionId = req.query.session_id;
-    
-    if (pagosConfirmados[sessionId] && pagosConfirmados[sessionId].paid) {
-        res.json({ status: 'paid', telegramLink: 'https://t.me/VIPSignalsExclusive' });
-    } else {
-        res.status(404).json({ status: 'not_found_or_pending' });
-    }
-});
-
-// INICIAR EL SERVIDOR
-app.listen(PORT, () => console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`));
+      response.redirect(session.getUrl(), 303);
+      return "";
+    });
+  }
+}
