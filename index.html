@@ -722,7 +722,8 @@
         <p id="notification-text">¡Pago procesado con éxito!</p>
     </div>
 
-    <script>
+    <script src="https://js.stripe.com/v3/">
+
        document.addEventListener('DOMContentLoaded', function() {
     // --- Navegación y UI General (sin cambios) ---
     const navLinks = document.querySelectorAll('.nav-link');
@@ -864,7 +865,6 @@
         showNotification('El pago fue cancelado. Puedes intentarlo de nuevo cuando quieras.', true);
     }
 });
-
 </script>
 
 </body>
