@@ -866,6 +866,11 @@
         showNotification('El pago fue cancelado. Puedes intentarlo de nuevo cuando quieras.', true);
     }
 });
+  stripe.redirectToCheckout({
+  // ... otras opciones
+  successUrl: 'https://tu-sitio-web.com/pago-exitoso.html', // URL completa
+  cancelUrl: 'https://tu-sitio-web.com/pago-cancelado.html'  // URL completa
+});
 </script>
 
 </body>
