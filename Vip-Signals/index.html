@@ -619,4 +619,254 @@
             </div>
         </section>
 
-       
+              <!-- Sección Pagos -->
+        <section id="pagos" class="section">
+            <div class="payment-container">
+                <div class="payment-header">
+                    <h2>Elige tu Plan VIP</h2>
+                    <p>Desbloquea acceso completo a todas nuestras señales y herramientas exclusivas</p>
+                </div>
+
+                <div class="payment-options">
+                    <!-- CAMBIO STRIPE: Tarjeta de pago con Stripe -->
+                    <div class="payment-card">
+                        <div class="payment-icon"><i class="fab fa-stripe-s"></i></div>
+                        <h3>Pago con Tarjeta (Stripe)</h3>
+                        <p>Paga de forma segura con tu tarjeta de débito o crédito a través de Stripe, una plataforma de pago líder mundial.</p>
+
+                        <div class="payment-form">
+                            <div class="form-group">
+                                <label for="plan-select-stripe">Selecciona un plan</label>
+                                <!-- CAMBIO STRIPE: Los 'value' deben ser los IDs de precios de Stripe -->
+                                <select id="plan-select-stripe">
+                                    <option value="price_1T5IxeRvcXwFOa1Ft5skQeBj">Mensual - 30.00 USD</option>
+                                    <option value="price_1T5J2oRvcXwFOa1FwNnyl6zh">Anual - $399.99 USD (Ahorra 33%)</option>
+                                </select>
+                            </div>
+                            <!-- CAMBIO STRIPE: El botón ahora inicia el Checkout de Stripe -->
+                            <button class="payment-button" id="stripe-payment-btn">Pagar con Stripe</button>
+                        </div>
+                    </div>
+
+                    <!-- CAMBIO BINANCE: Tarjeta de pago con Binance -->
+                    <div class="payment-card">
+                        <div class="payment-icon"><i class="fab fa-bitcoin"></i></div>
+                        <h3>Pago con Binance</h3>
+                        <p>Paga usando criptomonedas a través de Binance Pay. Aceptamos BTC, ETH, BNB y muchas más.</p>
+
+                        <div class="payment-form">
+                            <div class="form-group">
+                                <label for="plan-select-binance">Selecciona un plan</label>
+                                <!-- CAMBIO BINANCE: Los 'value' son para identificar el plan en el backend -->
+                                <select id="plan-select-binance">
+                                    <option value="monthly">Mensual - ~0.0012 BTC</option>
+                                    <option value="yearly">Anual - ~0.0098 BTC (Ahorra 33%)</option>
+                                </select>
+                            </div>
+
+<!-- CAMBIO BINANCE: El botón ahora llama a tu backend -->
+                            <button class="payment-button" id="binance-payment-btn">Pagar con Binance</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="telegram-section" id="telegram-section">
+                    <h3><i class="fab fa-telegram"></i> ¡Acceso a Telegram VIP Desbloqueado!</h3>
+                    <p>Gracias por tu pago. Ahora tienes acceso completo a nuestro canal VIP en Telegram donde recibirás señales exclusivas.</p>
+
+                    <div class="telegram-link">
+                        <input type="text" id="telegram-link" value="https://t.me/VIPSignalsExclusive" readonly>
+                        <button id="copy-telegram-btn">Copiar Enlace</button>
+                    </div>
+
+                    <p style="margin-top: 1rem; color: var(--text-secondary);">Este enlace es personal y no debe ser compartido. Tu acceso es válido según el plan que has seleccionado.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>VIP SIGNALS</h3>
+                <p>Señales de trading profesionales para maximizar tus ganancias en el mercado de criptomonedas.</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#redes">Redes Sociales</a></li>
+                    <li><a href="#pagos">Planes VIP</a></li>
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> support@vipsignals.com</li>
+                    <li><i class="fab fa-telegram"></i> @VIPSignalsSupport</li>
+                    <li><i class="fas fa-clock"></i> Soporte 24/7</li>
+                </ul>
+            </div>
+        </div>
+
+<div class="footer-bottom">
+            <p>&copy; 2023 VIP SIGNALS. Todos los derechos reservados. | Trading de criptomonedas conlleva riesgos. Opera con responsabilidad.</p>
+        </div>
+    </footer>
+
+    <div class="notification" id="notification">
+        <p id="notification-text">¡Pago procesado con éxito!</p>
+    </div>
+
+<script>
+
+    <script>
+       document.addEventListener('DOMContentLoaded', function() {
+    // --- Navegación y UI General (sin cambios) ---
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.section');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            navLinks.forEach(l => l.classList.remove('active'));
+            sections.forEach(s => s.classList.remove('active'));
+            this.classList.add('active');
+            const sectionId = this.getAttribute('data-section');
+            document.getElementById(sectionId).classList.add('active');
+        });
+    });
+
+    function showNotification(message, isError = false) {
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notification-text');
+        notificationText.textContent = message;
+        notification.classList.toggle('error', isError);
+        notification.classList.add('show');
+        setTimeout(() => notification.classList.remove('show'), 4000);
+    }
+
+    document.getElementById('copy-telegram-btn').addEventListener('click', function() {
+        const telegramLink = document.getElementById('telegram-link');
+        telegramLink.select();
+        document.execCommand('copy');
+        showNotification('¡Enlace de Telegram copiado!');
+    });
+
+    // --- INICIO DEL BLOQUE DE PAGO STRIPE DEPURADO ---
+    console.log("1. El script se ha cargado.");
+
+    // CAMBIO STRIPE: Reemplaza con tu clave publicable de Stripe
+    const stripePublicKey = 'pk_test_51SgaUKRvcXwFOa1FKVVmuIETFobtiveBLD07ZDvUMnsvVBeHNiANDedJDj8tYZWwgKZuSS3gVgPpsXdZn5o7xvoE00uWojT6TZ'; 
+    console.log("2. Clave pública definida:", stripePublicKey.substring(0, 10) + "...");
+
+    let stripe;
+    try {
+        stripe = Stripe(stripePublicKey);
+        console.log("3. Objeto de Stripe inicializado correctamente.");
+    } catch (e) {
+        console.error("ERROR CRÍTICO: No se pudo inicializar Stripe. ¿La librería de Stripe está cargada?", e);
+        showNotification("Error de configuración de pago. Contacta al soporte.", true);
+        return; // Detenemos todo si Stripe no funciona
+    }
+
+    const stripeButton = document.getElementById('stripe-payment-btn');
+    console.log("4. Botón de Stripe encontrado:", stripeButton);
+
+    if (!stripeButton) {
+        console.error("ERROR CRÍTICO: No se encontró el botón con el ID 'stripe-payment-btn'.");
+        return;
+    }
+
+    stripeButton.addEventListener('click', async function() {
+        console.log("5. Botón de Stripe presionado.");
+        this.disabled = true;
+        this.textContent = 'Procesando...';
+
+        const planSelect = document.getElementById('plan-select-stripe');
+        if (!planSelect) {
+            console.error("ERROR: No se encontró el select del plan.");
+            showNotification("Error en el formulario. Intenta recargar la página.", true);
+            this.disabled = false;
+            this.textContent = 'Pagar con Stripe';
+            return;
+        }
+
+        const priceId = planSelect.value;
+        console.log("6. ID de Precio seleccionado:", priceId);
+
+        if (!priceId || !priceId.startsWith('price_')) {
+            console.error("ERROR: El ID de precio no es válido.", priceId);
+            showNotification("Por favor, selecciona un plan válido.", true);
+            this.disabled = false;
+            this.textContent = 'Pagar con Stripe';
+            return;
+        }
+
+        try {
+            console.log("7. Intentando redirigir al Checkout de Stripe...");
+            const { error } = await stripe.redirectToCheckout({
+                lineItems: [{ price: priceId, quantity: 1 }],
+                mode: 'subscription',
+                successUrl: `${window.location.origin}/#pagos?success=true`,
+                cancelUrl: `${window.location.origin}/#pagos?cancelled=true`,
+            });
+
+            if (error) {
+                console.error("8. Error devuelto por Stripe:", error);
+                showNotification(error.message, true);
+                this.textContent = 'Pagar con Stripe';
+                this.disabled = false;
+            }
+        } catch (e) {
+            console.error("9. ERROR INESPERADO en el frontend:", e);
+            showNotification('No se pudo conectar con el procesador de pagos.', true);
+            this.textContent = 'Pagar con Stripe';
+            this.disabled = false;
+        }
+    });
+    // --- FIN DEL BLOQUE DE PAGO STRIPE ---
+
+    // --- Lógica de Pago con Binance (sin cambios) ---
+    const binanceButton = document.getElementById('binance-payment-btn');
+    binanceButton.addEventListener('click', async function() {
+        this.disabled = true;
+        this.textContent = 'Procesando...';
+        const plan = document.getElementById('plan-select-binance').value;
+        try {
+            const response = await fetch('https://tu-backend.com/create-binance-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ plan: plan })
+            });
+            const orderData = await response.json();
+            if (orderData.checkoutUrl) {
+                window.location.href = orderData.checkoutUrl;
+            } else {
+                throw new Error(orderData.error || 'No se pudo generar la URL de pago.');
+            }
+        } catch (e) {
+            showNotification('Error al conectar con Binance. Inténtalo de nuevo.', true);
+            this.textContent = 'Pagar con Binance';
+            this.disabled = false;
+            console.error(e);
+        }
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'true') {
+        showNotification('¡Pago exitoso! Bienvenido a VIP.');
+        document.getElementById('telegram-section').classList.add('active');
+    }
+    if (urlParams.get('cancelled') === 'true') {
+        showNotification('El pago fue cancelado. Puedes intentarlo de nuevo cuando quieras.', true);
+    }
+});
+</script>
+
+</body>
+</html>
