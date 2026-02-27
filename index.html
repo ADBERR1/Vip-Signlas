@@ -1,46 +1,22 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Prueba de Pago Stripe</title>
-    <script src="https://js.stripe.com/v3/"></script>
-</head>
-<body>
-
-    <h1>Prueba de Pago</h1>
-    <button id="checkout-button">Pagar 10€</button>
-
-    <script>
-        // 1. Pega tu CLAVE PUBLICABLE de prueba aquí (empieza con pk_test_)
-        const stripe = Stripe('pk_test_51SgaUp2LA6dgBJdr5G1YqfHWRF50oollzywmzLh2QEHYa2gvPF7VAPiVFKYStkC9BAyxhDtyfSWehHLnLsijh7fG00cr1wNFuV'); 
-
-        const checkoutButton = document.getElementById('checkout-button');
-
-        checkoutButton.addEventListener('click', async () => {
-            // 2. Pega tu ID de PRECIO de prueba aquí (empieza con price_)
-            const priceId = 'price_1T5K0x2LA6dgBJdrsPM9wH0U'; 
-
-            try {
-                const { error } = await stripe.redirectToCheckout({
-                    lineItems: [{
-                        price: priceId, // El ID del precio va DENTRO de lineItems
-                        quantity: 1,
-                    }],
-                    mode: 'payment', // 'payment' para un solo pago, 'subscription' para suscripciones
-                    
-                    // 3. IMPORTANTE: Usa URLs COMPLETAS y válidas
-                    successUrl: 'https://buy.stripe.com/test_4gM9AM7Dw0clc2j6wubwk00/exito.html', // <-- CAMBIA ESTO
-                    cancelUrl: 'https://buy.stripe.com/test_4gM9AM7Dw0clc2j6wubwk00/cancelado.html', // <-- CAMBIA ESTO
-                });
-
-                if (error) {
-                    console.error("Error de Stripe:", error.message);
-                }
-
-            } catch (e) {
-                console.error("Error inesperado:", e);
-            }
-        });
-    </script>
-
-</body>
+  <head>
+    <title>Buy cool new product</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://js.stripe.com/clover/stripe.js"></script>
+  </head>
+  <body>
+    <section>
+      <div class="product">
+        <img src="https://i.imgur.com/EHyR2nP.png" alt="The cover of Stubborn Attachments" />
+        <div class="description">
+          <h3>Stubborn Attachments</h3>
+          <h5>$20.00</h5>
+        </div>
+      </div>
+      <form action="/create-checkout-session" method="POST">
+        <button type="submit" id="checkout-button">Checkout</button>
+      </form>
+    </section>
+  </body>
 </html>
